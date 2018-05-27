@@ -9,11 +9,18 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
+using FaceBot.Repository;
 
 namespace FaceBot.Business
 {
     class FacebookBusiness
     {
+        private FacebookRepository repository;
+
+        public FacebookBusiness()
+        {
+            repository = new FacebookRepository();
+        }
 
         public List<String> getListUsers()
         {
@@ -26,14 +33,13 @@ namespace FaceBot.Business
             list.Add("Victor Osés");
             list.Add("Kevin Meeira");
             list.Add("Juliana Costa Melo");
-            list.Add("Viviane Suelen");
             
             return list;
         }
 
         public void LoginAndRedirectPostFacebook() {
             List<String> friends;
-            
+            bool flag = true;
 
             FirefoxOptions options = new FirefoxOptions();
             options.AddArgument("--start-maximized");
@@ -59,23 +65,38 @@ namespace FaceBot.Business
 
                     while (true)
                     {
+                        //Comentando usando o layout mobile
                         foreach (var friend in friends)
                         {
                             //Comenta nome dos amigos no facebook
-                            Thread.Sleep(3500);
-                            CommentUsersInPost(driver, friend);
+                            Thread.Sleep(2000);
+                            flag = CommentUsersInPost(driver, friend);
+                            if (!flag)
+                                break;
+                        }
+
+                        driver.Navigate().GoToUrl(ConfigurationManager.AppSettings["facebookPostNewLayout"]);
+
+                        //Comentando usando o layout padrão
+                        foreach (var friend in friends)
+                        {
+                            //Comenta nome dos amigos no facebook
+                            Thread.Sleep(2000);
+                            flag = CommentUsersInPostByNewLayout(driver, friend);
+                            if (!flag)
+                                break;
                         }
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    new FacebookRepository().Log(null, ex.Message);
                 }
             }
         }
 
-        public void CommentUsersInPost(FirefoxDriver driver, string friend)
+        public bool CommentUsersInPost(FirefoxDriver driver, string friend)
         {
             bool isExist = true;
 
@@ -92,25 +113,55 @@ namespace FaceBot.Business
                 }
             }
 
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             driver.FindElements(By.CssSelector("[class*='cp dy dz']")).First().Click();
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             driver.FindElement(By.CssSelector("[class*='bp bq br bs']")).Click();
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             driver.FindElement(By.CssSelector("[class*='bn bo bp']")).SendKeys(friend);
-            Thread.Sleep(1500);
+            Thread.Sleep(1600);
             driver.FindElement(By.CssSelector("[class*='bb bc bd bq br']")).Click();
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             var checkBoxConfirmFriend = driver.FindElement(By.CssSelector("[class*='n']"));
             checkBoxConfirmFriend.FindElements(By.XPath("//input[@type='checkbox']")).First().Click();
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             driver.FindElement(By.CssSelector("[class*='bb bc bd cb br']")).Click();
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             driver.FindElement(By.CssSelector("[class*='be bf bg']")).Click();
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             driver.FindElement(By.CssSelector("[class*='be bf bg']")).SendKeys(".");
-            Thread.Sleep(1500);
+            Thread.Sleep(1100);
             driver.FindElement(By.CssSelector("[class*='bm bd bv bw bx']")).Click();
+            
+            //Validando bloqueio temporário
+            try
+            {
+                driver.FindElement(By.CssSelector("[class*='bl bm']")).Click();
+                new FacebookRepository().Log(friend, "Você foi bloqueado pois está usando os recursos do facebook rápido demais");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                new FacebookRepository().Log(friend, ex.Message);
+            }
+
+            try
+            {
+                driver.FindElementByCssSelector("textarea#composerInput").Click();
+                new FacebookRepository().Insert(friend);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                new FacebookRepository().Log(friend, ex.Message);
+                return false;
+            }
+        }
+
+        public bool CommentUsersInPostByNewLayout(FirefoxDriver driver, string friend) {
+
+
+            return false;
         }
     }
 }
