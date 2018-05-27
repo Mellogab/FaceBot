@@ -1,0 +1,9 @@
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\bin\Debug\FaceBot.exe.config
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\bin\Debug\FaceBot.exe
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\bin\Debug\FaceBot.pdb
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\bin\Debug\WebDriver.dll
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\bin\Debug\WebDriver.xml
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\obj\Debug\FaceBot.csproj.CoreCompileInputs.cache
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\obj\Debug\FaceBot.csproj.CopyComplete
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\obj\Debug\FaceBot.exe
+C:\Users\pc2017\source\repos\FaceBot\FaceBot\obj\Debug\FaceBot.pdb
