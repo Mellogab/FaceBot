@@ -80,6 +80,8 @@ namespace FaceBot.Business
                 {
                     new FacebookRepository().Log(null, ex.Message);
                 }
+
+                driver.Quit();
             }
 
             LoginAndRedirectPostFacebook();
