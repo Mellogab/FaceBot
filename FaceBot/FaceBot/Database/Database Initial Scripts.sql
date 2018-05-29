@@ -17,5 +17,3 @@ Created_At Datetime NULL
 )
 
 SELECT * FROM COMMENTS_LOG
-
-
